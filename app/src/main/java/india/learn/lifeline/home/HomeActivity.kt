@@ -1,5 +1,6 @@
 package india.learn.lifeline.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,8 +41,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import india.learn.lifeline.AppointmentActivity
 import india.learn.lifeline.R
 import india.learn.lifeline.ui.theme.LifeLineTheme
 
@@ -51,8 +54,12 @@ class HomeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LifeLineTheme {
+                val context= LocalContext.current
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SetUpHomeComponent(innerPadding)
+                    SetUpHomeComponent(innerPadding) {
+                        val intent=Intent(context,AppointmentActivity::class.java)
+                        context.startActivity(intent)
+                    }
                 }
             }
         }
@@ -60,13 +67,13 @@ class HomeActivity : ComponentActivity() {
 }
 
 @Composable
-private fun SetUpHomeComponent(innerPadding: PaddingValues) {
+private fun SetUpHomeComponent(innerPadding: PaddingValues, callback: () -> Unit) {
     val homeObjects = prepareDataObject()
     LazyColumn(
         modifier = Modifier.padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item{
+        item {
             TopImageIcons()
         }
         item {
@@ -83,10 +90,14 @@ private fun SetUpHomeComponent(innerPadding: PaddingValues) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                HomeItems(pair[0])
+                HomeItems(pair[0]) {
+                    callback.invoke()
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 if (pair.size > 1) {
-                    HomeItems(pair[1])
+                    HomeItems(pair[1]) {
+                        callback.invoke()
+                    }
                 }
             }
         }
@@ -94,7 +105,7 @@ private fun SetUpHomeComponent(innerPadding: PaddingValues) {
 }
 
 @Composable
-private fun HomeItems(data: HomeObject) {
+private fun HomeItems(data: HomeObject, callback: () -> Unit) {
     Column(
         modifier = Modifier
             .width(120.dp)

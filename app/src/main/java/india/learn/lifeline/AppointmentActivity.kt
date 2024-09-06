@@ -1,5 +1,6 @@
 package india.learn.lifeline
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,7 @@ class AppointmentActivity : ComponentActivity() {
                     var phoneNumber by remember { mutableStateOf("123-456-7890") }
                     var age by remember { mutableStateOf("30") }
                     var symptoms by remember { mutableStateOf("Fever, Cough, Shortness of Breath") }
-
+                    val context = LocalContext.current
                     PatientDetailsPage(
                         patientName = patientName,
                         onNameChange = { patientName = it },
@@ -54,7 +56,8 @@ class AppointmentActivity : ComponentActivity() {
                         symptoms = symptoms,
                         onSymptomsChange = { symptoms = it },
                         onBookAppointmentClick = {
-                            // Handle button click
+                            val intent = Intent(context, EmergencyHelpActivity::class.java)
+                            context.startActivity(intent)
                         }
                     )
                 }
